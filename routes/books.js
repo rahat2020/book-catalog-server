@@ -7,8 +7,8 @@ router.post('/add', async (req, res, next) => {
     try {
         const articles = await Books(req.body)
         const save = await articles.save()
-        res.status(200).json(save)
-        res.status(200).json('book addedd')
+        // res.status(200).json(save)
+        res.status(200).json('book created')
 
         console.log(save)
     } catch (err) {
@@ -53,13 +53,13 @@ router.get('/get', async (req, res, next) => {
     }
 })
 // UPDATE BOOKS DATA
-router.patch('/update/:id', async (req, res) => {
+router.put('/update/:id', async (req, res) => {
     try {
-        const bookId = req.params.id;
+        const id = req.params.id;
         const updates = req.body;
 
         const updatedBook = await Books.findByIdAndUpdate(
-            bookId,
+            id,
             { $set: updates }, // Use $set to apply partial updates
             { new: true } // Return the updated document
         );
@@ -68,7 +68,7 @@ router.patch('/update/:id', async (req, res) => {
             return res.status(404).json({ message: 'Book not found' });
         }
 
-        res.json(updatedBook);
+        res.status(200).json('book is updated');
     } catch (err) {
         res.status(500).json({ message: err.message });
         console.log(err)
@@ -76,12 +76,12 @@ router.patch('/update/:id', async (req, res) => {
 });
 
 // ADD NEW REVIEWS
-router.post('/books/:bookId/reviews', async (req, res) => {
-    const { bookId } = req.params;
+router.post('/reviews/:id', async (req, res) => {
+    const { id } = req.params;
     const { rating, comment, reviewer } = req.body;
   
     try {
-      const book = await Book.findById(bookId);
+      const book = await Books.findById(id);
       if (!book) {
         return res.status(404).json({ error: 'Book not found' });
       }
@@ -95,7 +95,8 @@ router.post('/books/:bookId/reviews', async (req, res) => {
       book.reviews.push(newReview);
       await book.save();
   
-      res.status(201).json(newReview);
+      res.status(201).json('review created');
+    //   res.status(201).json(newReview);
     } catch (error) {
       console.error('Error creating review:', error);
       res.status(500).json({ error: 'An error occurred while creating the review' });
@@ -117,7 +118,7 @@ router.get('/get/:id', async (req, res, next) => {
 router.delete('/delete/:id', async (req, res, next) => {
     try {
         await Books.findByIdAndDelete(req.params.id)
-        res.status(200).json('article deleted')
+        res.status(200).json('book is deleted')
     } catch (err) {
         console.log(err)
         next(err)
