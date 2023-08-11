@@ -60,15 +60,17 @@ router.put('/update/:id', async (req, res) => {
 
         const updatedBook = await Books.findByIdAndUpdate(
             id,
-            { $set: updates }, // Use $set to apply partial updates
-            { new: true } // Return the updated document
+            { $set: updates },
+            { new: true } 
         );
 
         if (!updatedBook) {
             return res.status(404).json({ message: 'Book not found' });
         }
 
+        // res.status(200).json(updatedBook);
         res.status(200).json('book is updated');
+        console.log(updatedBook)
     } catch (err) {
         res.status(500).json({ message: err.message });
         console.log(err)
